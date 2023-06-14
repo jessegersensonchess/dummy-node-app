@@ -1,5 +1,6 @@
 {
-  "name": "mypackage",
+    "name": "@jessegersensonchess/my-package",
+  
   "version": "1.0.0",
   "description": "my description",
   "main": "index.js",
@@ -8,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jessegersensonchess/dummy-node-app.git"
+    "url": "https://github.com/jessegersensonchess/dummy-node-app.git"
   },
-  "author": "Jdsse",
+  "author": "Jesse",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jessegersensonchess/dummy-node-app/issues"
