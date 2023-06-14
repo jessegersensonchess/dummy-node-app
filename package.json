@@ -1,0 +1,22 @@
+{
+  "name": "mypackage",
+  "version": "1.0.0",
+  "description": "my description",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessegersensonchess/dummy-node-app.git"
+  },
+  "author": "Jdsse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jessegersensonchess/dummy-node-app/issues"
+  },
+  "homepage": "https://github.com/jessegersensonchess/dummy-node-app#readme",
+  "dependencies": {
+    "chalk": "^5.2.0"
+  }
+}
