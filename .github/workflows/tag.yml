@@ -20,6 +20,7 @@ jobs:
         node-version: '20'
 
     - name: Bump version and push tag
+      id: tag
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -42,7 +43,8 @@ jobs:
         RELEASE_NOTES=$(git log --pretty=format:"- %h %s" --abbrev-commit $BASE..$HEAD)
         git log --merges --pretty=format:"- %h %s" --grep="Merge pull request" --abbrev-commit $BASE..$HEAD
         echo "RELEASE_NOTES: ${RELEASE_NOTES}"
-        npm version $VERSION_TYPE -m "release: %s"
+        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT 
         git push --follow-tags
 
     - name: Create Release
@@ -50,8 +52,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ steps.tag.outputs.version }} 
+        release_name: Release ${{ steps.tag.outputs.version }}
 #        body: "release body"
         draft: false
         prerelease: false
