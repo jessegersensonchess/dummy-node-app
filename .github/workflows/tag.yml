@@ -35,7 +35,23 @@ jobs:
         fi
 
         # Bump version
-        npm version $VERSION_TYPE -m "chore(release): %s"
+        npm version $VERSION_TYPE -m "release: %s"
 
         # Push tag to repository
+        BASE=$(git rev-list --tags --max-count=1)
+        HEAD=$(git rev-parse HEAD)
+        RELEASE_NOTES=$(git log --merges --pretty=format:"- %h %s" --grep="Merge pull request" --abbrev-commit $BASE..$HEAD)
+        echo "RELEASE_NOTES: ${RELEASE_NOTES}"
         git push --follow-tags
+
+#      - name: Create Release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          body: ${{ steps.releasenotes.outputs.notes }}
+#          draft: false
+#          prerelease: false
+
