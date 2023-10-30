@@ -41,6 +41,7 @@ jobs:
         BASE=$(git rev-list --tags --max-count=1)
         HEAD=$(git rev-parse HEAD)
         RELEASE_NOTES=$(git log --pretty=format:"- %h %s" --abbrev-commit $BASE..$HEAD)
+        git log --pretty=format:"- %h %s" --abbrev-commit ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
         git log --merges --pretty=format:"- %h %s" --grep="Merge pull request" --abbrev-commit $BASE..$HEAD
         echo "RELEASE_NOTES: ${RELEASE_NOTES}"
         git push --follow-tags
