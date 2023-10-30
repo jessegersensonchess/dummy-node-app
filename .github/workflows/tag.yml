@@ -1,0 +1,39 @@
+name: Version Bump
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Bump version and push tag
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+
+        # Determine version type from PR title
+        if [[ "$PR_TITLE" == *"[major]"* ]]; then
+          VERSION_TYPE="major"
+        elif [[ "$PR_TITLE" == *"[minor]"* ]]; then
+          VERSION_TYPE="minor"
+        else
+          VERSION_TYPE="patch"
+        fi
+
+        # Bump version
+        npm version $VERSION_TYPE -m "chore(release): %s"
+
+        # Push tag to repository
+        git push --follow-tags
