@@ -1,6 +1,6 @@
 {
     "name": "@jessegersensonchess/my-package",
-    "version": "2.5.1",
+    "version": "2.5.2",
     "description": "my description",
     "main": "index.js",
     "scripts": {
