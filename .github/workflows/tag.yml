@@ -5,14 +5,17 @@ on:
     types: [closed]
     branches:
       - master
+      - develop
 
 jobs:
   version-bump:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-    - name: Checkout code
+    - name: Checkout destination branch
       uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -36,25 +39,29 @@ jobs:
         fi
 
         # Bump version
+        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
 
-        # Push tag to repository
+        # Get release notes based on the tags
         BASE=$(git rev-list --tags --max-count=1)
         HEAD=$(git rev-parse HEAD)
         RELEASE_NOTES=$(git log --pretty=format:"- %h %s" --abbrev-commit $BASE..$HEAD)
-        git log --merges --pretty=format:"- %h %s" --grep="Merge pull request" --abbrev-commit $BASE..$HEAD
+
+        # Output the release notes
         echo "RELEASE_NOTES: ${RELEASE_NOTES}"
-        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
         echo "version=$VERSION" >> $GITHUB_OUTPUT 
-        git push --follow-tags
+
+        # Push the tag and changes
+        git push origin --tags
+        git push
 
     - name: Create Release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.tag.outputs.version }} 
+        tag_name: ${{ steps.tag.outputs.version }}
         release_name: ${{ steps.tag.outputs.version }}
-#        body: "release body"
+        body: ${{ steps.tag.outputs.version }}"\n\n"$RELEASE_NOTES
         draft: false
         prerelease: false
 
