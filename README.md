@@ -4,7 +4,4 @@ repo shows examples of:
  - publishing an rpm
  - tagging a release
 
-(test 1698751040)
 
-
-Tue Oct 31 03:29:48 PM CET 2023
