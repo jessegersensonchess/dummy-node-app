@@ -1,0 +1,43 @@
+name: Bump Version on Merge
+
+on:
+  pull_request:
+    branches: [ develop ]
+    types: [closed]
+
+jobs:
+  version-bump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: develop
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16' # Use the Node.js version your project requires
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Bump Minor Version
+      run: npm version minor --no-git-tag-version
+
+    - name: Commit and Push
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -am "chore: Bump version [skip ci]"
+        git push
+
+    # Additional steps for handling merged feature branches
+    # - name: Merge back to feature branches (if necessary)
+    #   run: |
+    #     git fetch origin
+    #     git merge origin/develop your_feature_branch
+    #     git push origin your_feature_branch
+
