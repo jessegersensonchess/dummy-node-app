@@ -24,14 +24,43 @@ jobs:
     - name: Fetch Latest History
       run: git fetch
 
-    - name: Bump Minor Version
-      run: npm version minor --no-git-tag-version
+#    - name: Bump Minor Version
+#      run: npm version minor --no-git-tag-version
+
+    - name: Bump version and push tag
+      id: tag
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        PR_TITLE="${{ github.event.pull_request.title }}"
+
+        # Determine version type from PR title
+        if [[ "$PR_TITLE" == *"[major]"* ]]; then
+          VERSION_TYPE="major"
+        elif [[ "$PR_TITLE" == *"[minor]"* ]]; then
+          VERSION_TYPE="minor"
+        else
+          VERSION_TYPE="patch"
+        fi
+
+        # Bump version
+        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
+        # VERSION=$(node -p "require('./package.json').version")
+
+        # Get release notes based on the tags
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+        # Push the tag and changes
+        git push origin --tags
+        git push
 
     - name: Commit and Push
+      env:
+        VERSION=${{ steps.tag.outputs.version }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -am "chore: Bump version [skip ci]"
+        git commit -am "chore: Bump version ${VERSION}"
         git push
 
     # Additional steps for handling merged feature branches

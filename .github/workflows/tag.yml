@@ -5,7 +5,6 @@ on:
     types: [closed]
     branches:
       - master
-#      - develop
 
 jobs:
   version-bump:
@@ -14,8 +13,8 @@ jobs:
     steps:
     - name: Checkout destination branch
       uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.pull_request.base.ref }}
+#      with:
+#        ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -46,8 +45,8 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT 
 
         # Push the tag and changes
-        # git push origin --tags
-        # git push
+        git push origin --tags
+        git push
 
     - name: Create Release
       uses: actions/create-release@v1
