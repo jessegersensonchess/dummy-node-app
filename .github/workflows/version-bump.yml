@@ -56,7 +56,7 @@ jobs:
 
     - name: Commit and Push
       env:
-        VERSION=${{ steps.tag.outputs.version }}
+        VERSION: ${{ steps.tag.outputs.version }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
