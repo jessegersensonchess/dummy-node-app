@@ -1,67 +1,62 @@
-#name: Version Bump
-#
-#on:
-#  pull_request:
-#    types: [closed]
-#    branches:
-#      - master
+name: Create release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
 #      - develop
-#
-#jobs:
-#  version-bump:
-#    runs-on: ubuntu-latest
-#    if: github.event.pull_request.merged == true
-#    steps:
-#    - name: Checkout destination branch
-#      uses: actions/checkout@v3
-#      with:
-#        ref: ${{ github.event.pull_request.base.ref }}
-#
-#    - name: Setup Node.js
-#      uses: actions/setup-node@v3
-#      with:
-#        node-version: '20'
-#
-#    - name: Bump version and push tag
-#      id: tag
-#      run: |
-#        git config --global user.name "github-actions[bot]"
-#        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#        PR_TITLE="${{ github.event.pull_request.title }}"
-#
-#        # Determine version type from PR title
-#        if [[ "$PR_TITLE" == *"[major]"* ]]; then
-#          VERSION_TYPE="major"
-#        elif [[ "$PR_TITLE" == *"[minor]"* ]]; then
-#          VERSION_TYPE="minor"
-#        else
-#          VERSION_TYPE="patch"
-#        fi
-#
-#        # Bump version
-#        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
-#
-#        # Get release notes based on the tags
-#        BASE=$(git rev-list --tags --max-count=1)
-#        HEAD=$(git rev-parse HEAD)
-#        RELEASE_NOTES=$(git log --pretty=format:"- %h %s" --abbrev-commit $BASE..$HEAD)
-#
-#        # Output the release notes
-#        echo "RELEASE_NOTES: ${RELEASE_NOTES}"
-#        echo "version=$VERSION" >> $GITHUB_OUTPUT 
-#
-#        # Push the tag and changes
-#        git push origin --tags
-#        git push
-#
-#    - name: Create Release
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: ${{ steps.tag.outputs.version }}
-#        release_name: ${{ steps.tag.outputs.version }}
-#        body: ${{ steps.tag.outputs.version }}"\n\n"$RELEASE_NOTES
-#        draft: false
-#        prerelease: false
-#
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - name: Checkout destination branch
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Bump version and push tag
+      id: tag
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        PR_TITLE="${{ github.event.pull_request.title }}"
+
+        # Determine version type from PR title
+        if [[ "$PR_TITLE" == *"[major]"* ]]; then
+          VERSION_TYPE="major"
+        elif [[ "$PR_TITLE" == *"[minor]"* ]]; then
+          VERSION_TYPE="minor"
+        else
+          VERSION_TYPE="patch"
+        fi
+
+        # Bump version
+        # VERSION=$(npm version $VERSION_TYPE -m "release: %s")
+        VERSION=$(node -p "require('./package.json').version")
+
+        # Get release notes based on the tags
+        echo "version=$VERSION" >> $GITHUB_OUTPUT 
+
+        # Push the tag and changes
+        # git push origin --tags
+        # git push
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.version }}
+        release_name: ${{ steps.tag.outputs.version }}
+        body: ${{ steps.tag.outputs.version }}"\n\n"$RELEASE_NOTES
+        draft: false
+        prerelease: false
+
