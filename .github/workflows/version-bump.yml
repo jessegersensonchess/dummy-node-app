@@ -52,7 +52,7 @@ jobs:
 
         # Push the tag and changes
         # git push origin --tags
-        # git push
+        git push
 
     - name: Commit and Push
       env:
