@@ -44,7 +44,7 @@ jobs:
         fi
 
         # Bump version
-        VERSION=$(npm version $VERSION_TYPE -m "release: %s")
+        VERSION=$(npm version $VERSION_TYPE --no-git-tag-version -m "bump version: %s")
         # VERSION=$(node -p "require('./package.json').version")
 
         # Get release notes based on the tags
@@ -52,7 +52,7 @@ jobs:
 
         # Push the tag and changes
         # git push origin --tags
-        git push
+        # git push
 
     - name: Commit and Push
       env:
