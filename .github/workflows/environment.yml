@@ -8,5 +8,5 @@ jobs:
     steps:
       - name: demo
         run: |
-          echo $one
+          echo ${{ vars.one }}
 
