@@ -1,0 +1,11 @@
+name: environment in github
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: sandbox
+    steps:
+      - name: deploy
+        echo ${{ vars.one }}
+
