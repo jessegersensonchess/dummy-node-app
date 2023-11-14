@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: sandbox
     steps:
-      - name: deploy
-        echo $one
+      - name: demo
+        run: |
+          echo $one
 
