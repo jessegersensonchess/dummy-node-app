@@ -7,5 +7,5 @@ jobs:
     environment: sandbox
     steps:
       - name: deploy
-        echo ${{ vars.one }}
+        echo $one
 
