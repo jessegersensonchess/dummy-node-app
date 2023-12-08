@@ -4,4 +4,8 @@ repo shows examples of:
  - publishing an rpm
  - tagging a release
 
+notes:
+ - testing conventional-commit branch naming
+
+
 
